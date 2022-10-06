@@ -28,7 +28,8 @@ function Login() {
         "http://localhost:5500/api/user/login",
         user
       );
-      localStorage.setItem("userData", JSON.stringify(res.data));
+      localStorage.setItem("userData", JSON.stringify(res.data.user));
+      localStorage.setItem("token", res.data.token);
       navigate("/home");
     } catch (error) {
       console.log(error);

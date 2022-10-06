@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 5500;
 //database connection
 mongoose
   .connect(
-    "mongodb+srv://mernapp:mernapp@cluster0.1wiwtco.mongodb.net/?retryWrites=true&w=majority"
+    process.env.DB_CONNECTION
   )
   .then(() => {
     console.log("Database connected");

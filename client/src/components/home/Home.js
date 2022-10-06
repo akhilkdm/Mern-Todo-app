@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./home.css";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
 
 export const Home = () => {
   const [itemText, setItemText] = useState("");
@@ -12,29 +13,44 @@ export const Home = () => {
   const data = localStorage.getItem("userData");
   const user = JSON.parse(data);
 
+  const token = localStorage.getItem("token");
+  const config = {
+    headers: { "Content-Type": "application/json", "x-auth-token": token },
+  };
+
   const addItem = async (e) => {
     e.preventDefault();
     try {
       if (!regex.test(itemText) && itemText !== "") {
-        const res = await axios.post("http://localhost:5500/api/item", {
-          item: itemText,
-          userId: user._id,
-        });
+        const res = await axios.post(
+          "http://localhost:5500/api/item",
+          {
+            item: itemText,
+            userId: user._id,
+          },
+          config
+        );
         setListItems((prev) => [...prev, res.data]);
         setItemText("");
         getItemList();
       }
-    } catch (error) {}
+    } catch (error) {
+      toast(error.response.data.msg);
+    }
   };
 
   const getItemList = async () => {
     try {
-      const res = await axios.post("http://localhost:5500/api/item/items", {
-        userId: user._id,
-      });
+      const res = await axios.post(
+        "http://localhost:5500/api/item/items",
+        {
+          userId: user._id,
+        },
+        config
+      );
       setListItems(res.data);
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      toast(error.response.data.msg);
     }
   };
 
@@ -45,11 +61,11 @@ export const Home = () => {
   //delete items
   const deleteItem = async (id) => {
     try {
-      await axios.delete(`http://localhost:5500/api/item/${id}`);
+      await axios.delete(`http://localhost:5500/api/item/${id}`, config);
       const newListItem = listItems.filter((item) => item._id !== id);
       setListItems(newListItem);
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      toast(error.response.data.msg);
     }
   };
 
@@ -57,9 +73,10 @@ export const Home = () => {
   const updateItem = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.put(
+      await axios.put(
         `http://localhost:5500/api/item/${isUpdating}`,
-        { item: updateItemText }
+        { item: updateItemText },
+        config
       );
       const updatedItemIndex = listItems.findIndex(
         (item) => item._id === isUpdating
@@ -68,7 +85,7 @@ export const Home = () => {
       setUpdateItemText("");
       setIsUpdating("");
     } catch (error) {
-      console.log(error);
+      toast(error.response.data.msg);
     }
   };
 
@@ -105,6 +122,7 @@ export const Home = () => {
           value={itemText}
         />
         <button type="submit">Add</button>
+        <ToastContainer />
       </form>
       <div className="todo-listItems">
         {listItems.map((item, i) => (

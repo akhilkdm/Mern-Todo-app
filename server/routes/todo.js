@@ -6,13 +6,14 @@ const {
   updateItem,
   deleteItem,
 } = require("../controllers/todoController");
+const { verifyToken } = require("../middlewares/verifyToken");
 
-router.route("/").post(addNewItem);
+router.route("/").post(verifyToken, addNewItem);
 
-router.route("/items").post(getAllitem);
+router.route("/items").post(verifyToken, getAllitem);
 
-router.route("/:id").put(updateItem);
+router.route("/:id").put(verifyToken, updateItem);
 
-router.route("/:id").delete(deleteItem);
+router.route("/:id").delete(verifyToken, deleteItem);
 
 module.exports = router;

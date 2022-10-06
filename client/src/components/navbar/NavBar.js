@@ -6,12 +6,13 @@ import { useNavigate } from "react-router-dom";
 function NavBar() {
   const data = localStorage.getItem("userData");
   const user = JSON.parse(data);
- const navigate = useNavigate();
+  const navigate = useNavigate();
 
-  const logout = ()=>{
+  const logout = () => {
     localStorage.removeItem("userData");
+    localStorage.removeItem("token");
     navigate("/");
-  }
+  };
 
   return (
     <Navbar className="bg-dark text-light">

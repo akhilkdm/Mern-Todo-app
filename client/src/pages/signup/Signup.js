@@ -12,6 +12,7 @@ import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
+// import Swal from "sweetalert2";
 
 function Signup() {
   const [username, setUsername] = useState();
@@ -31,14 +32,12 @@ function Signup() {
       if (!username || !email || !password) {
         toast("Fill the details");
       } else {
-        const res = await axios.post(
-          "http://localhost:5500/api/user/register",
-          user
-        );
+        await axios.post("http://localhost:5500/api/user/register", user);
+        // Swal.fire("Successfully Created Account");
         navigate("/login");
       }
     } catch (error) {
-     toast(error.response.data);
+      toast(error.response.data);
     }
   };
 
